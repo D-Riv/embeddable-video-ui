@@ -43,6 +43,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#000000",
     width: "5rem",
   },
+  tableContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  tableData: {
+    width: "60rem",
+  },
 }));
 
 const Home = () => {
@@ -55,7 +62,6 @@ const Home = () => {
     room_type: "",
     permanentRoom: true,
     accessType: 1,
-    paper: "",
     id: null,
   });
   const [sessionUrl, setSessionUrl] = useState("");
@@ -111,7 +117,7 @@ const Home = () => {
   useEffect(() => {
     fetchActiveConferences();
     fetchInactiveConferences();
-  }, [fetchActiveConferences, fetchInactiveConferences]);
+  }, [conferenceData, fetchActiveConferences, fetchInactiveConferences]);
 
   const addNewConferences = async (item) => {
     try {
@@ -123,16 +129,21 @@ const Home = () => {
         },
         // data: {},
         params: {
-          // name: conferenceData.name,
-          // room_type: conferenceData.room_type,
+          name: conferenceData.name,
+          room_type: conferenceData.room_type,
           // permanent_room: conferenceData.permanentRoom,
-          // access_type: conferenceData.accessType,
-          name: item,
-          room_type: "meeting",
           permanent_room: "true",
           access_type: 1,
+
+          // access_type: conferenceData.accessType,
+          // name: item,
+          // room_type: "meeting",
+          // permanent_room: "true",
+          // access_type: 1,
         },
       });
+      fetchActiveConferences();
+
       // window.location.reload();
       // setInactiveConferences(response.data.active_conferences);
       // console.log(response.data.room.embed_room_url);
@@ -143,7 +154,11 @@ const Home = () => {
   };
 
   const addbatch = () => {
-    const sessionArr = ["one", "two", "three", "four"];
+    setConferenceData({
+      name: "",
+      room_type: "",
+    });
+    const sessionArr = ["session1", "session2", "session3", "session4"];
 
     sessionArr.forEach((item) => {
       addNewConferences(item);
@@ -153,17 +168,18 @@ const Home = () => {
   const deleteConference = async () => {
     try {
       const response = await httpRequest({
-        endpoint: API.GET_CONFERENCES,
+        endpoint: `${API.GET_CONFERENCES}/${conferenceData.id}`,
         method: "DELETE",
         headers: {
           "X-Api-Key": DEFAULT.AUTH_TOKEN,
         },
         // data: {},
-        params: {
-          room_id: 4841878,
-        },
+        // params: {
+        //   room_id: 4904249,
+        // },
       });
       console.log(response.data);
+      fetchActiveConferences();
     } catch (err) {
       console.error("API Call Failed: ", err);
     }
@@ -188,15 +204,16 @@ const Home = () => {
       }
     });
   }, [activeConferences, conferenceData]);
-  // console.log(conferenceData.paper);
-  // console.log(activeConferences[0].embed_room_url);
+  // console.log(conferenceData.session);
+  // console.log(activeConferences[0].data.embed_room_url);
 
   return (
     <div>
-      <div>
-        <h1>View Active Sessions</h1>
-        <TableContainer component={Paper}>
-          <Table aria-label="customized table">
+      <h1>View Active Sessions</h1>
+
+      <div className={classes.tableContainer}>
+        <TableContainer component={Paper} className={classes.tableData}>
+          <Table aria-label="customized table" className={classes.tableData}>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Status</StyledTableCell>
@@ -227,7 +244,9 @@ const Home = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <h1>View InActive Meetings</h1>
+      </div>
+
+      {/* <h1>View InActive Meetings</h1>
         <TableContainer component={Paper}>
           <Table aria-label="customized table">
             <TableHead>
@@ -248,28 +267,26 @@ const Home = () => {
             </TableBody>
           </Table>
         </TableContainer> */}
-        <Paper>
-          <form noValidate autoComplete="off" className={classes.form}>
-            <h1>Add new conferences</h1>
-            <TextField
-              id="1"
-              label="Room name"
-              variant="outlined"
-              helperText="name of the room that will be visible to attendees. This name will be part of your meeting room url."
-              name="name"
-              onChange={handleFormSubmit}
-            />
-            <TextField
-              id="2"
-              label="Room type"
-              variant="outlined"
-              helperText="describes type of room.
-                          meeting	event type meeting
-                          webinar	event type webinar"
-              name="room_type"
-              onChange={handleFormSubmit}
-            />
-            <TextField
+      <Paper>
+        <form noValidate autoComplete="off" className={classes.form}>
+          <h1>Add new meeting session</h1>
+          <TextField
+            id="1"
+            label="Room name"
+            variant="outlined"
+            helperText="name of the room that will be visible to attendees. "
+            name="name"
+            onChange={handleFormSubmit}
+          />
+          <TextField
+            id="2"
+            label="Room type"
+            variant="outlined"
+            helperText="meeting or webinar"
+            name="room_type"
+            onChange={handleFormSubmit}
+          />
+          {/* <TextField
               id="3"
               label="Permanent room"
               variant="outlined"
@@ -278,53 +295,52 @@ const Home = () => {
                           true	permanent event."
               name="permanentRoom"
               onChange={handleFormSubmit}
-            />
-            <TextField
+            /> */}
+          {/* <TextField
               id="4"
               label="Access type"
               variant="outlined"
               helperText="
-                        1	describes open access room, not protected by password or token.
+                        1	describes open access room, not protected by password or token. 
                         2	password protected, access to the conference room granted based on password provided in advance.
                         3	token protected, each invitee receives a unique token that grants access to the conference room. Access token is single-use, so it can be used only once by one person."
               name="accessType"
               onChange={handleFormSubmit}
-            />
-            <TextField
-              id="5"
-              label="Session"
-              variant="outlined"
-              helperText="Post to Session1 or Session2"
-              name="Paper"
-              onChange={handleFormSubmit}
-            />
-          </form>
-          <div>
-            <button onClick={addNewConferences} className={classes.formButton}>
-              Add session
-            </button>
-            <button onClick={addbatch} className={classes.formButton}>
-              Batch create sessions
-            </button>
-          </div>
-          <form noValidate autoComplete="off" className={classes.form}>
-            <h1>Delete conference</h1>
-            <TextField
-              id="6"
-              label="Room Id"
-              variant="outlined"
-              helperText="Room Id"
-              name="id"
-              onChange={handleFormSubmit}
-            />
-          </form>
-          <div>
-            <button onClick={deleteConference} className={classes.formButton}>
-              Delete conference
-            </button>
-          </div>
-        </Paper>
-      </div>
+            /> */}
+          {/* <TextField
+            id="5"
+            label="Session"
+            variant="outlined"
+            helperText="Post to Session1 or Session2"
+            name="Paper"
+            onChange={handleFormSubmit}
+          /> */}
+        </form>
+        <div>
+          <button onClick={addNewConferences} className={classes.formButton}>
+            Add single meeting session
+          </button>
+          <button onClick={addbatch} className={classes.formButton}>
+            Batch create meeting sessions
+          </button>
+        </div>
+        <form noValidate autoComplete="off" className={classes.form}>
+          <h1>Delete meeting</h1>
+          <TextField
+            id="6"
+            label="Room Id"
+            variant="outlined"
+            helperText="Room Id"
+            name="id"
+            onChange={handleFormSubmit}
+          />
+        </form>
+        <div>
+          <button onClick={deleteConference} className={classes.formButton}>
+            Delete meeting
+          </button>
+        </div>
+      </Paper>
       {/* <Paper1 paper1Src={sessionUrl} /> */}
     </div>
   );
