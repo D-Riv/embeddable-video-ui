@@ -153,15 +153,53 @@ const Home = () => {
     }
   };
 
+  const addbatchConferences = async (item) => {
+    try {
+      const response = await httpRequest({
+        endpoint: API.GET_CONFERENCES,
+        method: "POST",
+        headers: {
+          "X-Api-Key": DEFAULT.AUTH_TOKEN,
+        },
+        // data: {},
+        params: {
+          name: item,
+          room_type: "meeting",
+          // permanent_room: conferenceData.permanentRoom,
+          permanent_room: "true",
+          access_type: 1,
+
+          // access_type: conferenceData.accessType,
+          // name: item,
+          // room_type: "meeting",
+          // permanent_room: "true",
+          // access_type: 1,
+        },
+      });
+      fetchActiveConferences();
+
+      // window.location.reload();
+      // setInactiveConferences(response.data.active_conferences);
+      // console.log(response.data.room.embed_room_url);
+      // setUrl(response.data.room.embed_room_url);
+    } catch (err) {
+      console.error("API Call Failed: ", err);
+    }
+  };
+
   const addbatch = () => {
-    setConferenceData({
-      name: "",
-      room_type: "",
-    });
+    // setConferenceData({
+    //   name: "",
+    //   room_type: "",
+    // });
     const sessionArr = ["session1", "session2", "session3", "session4"];
 
     sessionArr.forEach((item) => {
-      addNewConferences(item);
+      // setConferenceData({
+      //   name: item,
+      //   room_type: "meeting",
+      // });
+      addbatchConferences(item);
     });
   };
 

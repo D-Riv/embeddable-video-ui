@@ -12,6 +12,8 @@ import { httpRequest } from "../core.utils";
 import { API, DEFAULT } from "../core.config";
 import Iframe from "./Iframe";
 
+import "./Paper1.css";
+
 const Paper1 = ({ paper1Src }) => {
   const { session1 } = useContext(SessionUrl);
 
@@ -52,32 +54,48 @@ const Paper1 = ({ paper1Src }) => {
   });
   console.log(urlArr);
 
-  useEffect(() => {
-    const script = document.createElement("script");
+  // useEffect(() => {
+  //   const script = document.createElement("script");
 
-    // script.src =
-    //   "https://embed.clickmeeting.com/embed_conference.html?r=1716023574856678";
-    script.src = urlArr[0];
-    script.async = true;
-    script.setAttribute("type", "text/javascript");
+  //   script.src =
+  //     "https://embed.clickmeeting.com/embed_conference.html?r=1716023574856678";
+  //   // script.src = urlArr[0];
+  //   script.async = true;
+  //   script.setAttribute("type", "text/javascript");
+  //   script.setAttribute("id", "tag-contained");
 
-    document.getElementById("divtag").appendChild(script);
-
-    // return () => {
-    //   document.getElementById("divtag").removeChild(script);
-    // };
-  }, [session1, urlArr]);
+  //   document.body.appendChild(script);
+  //   // document.getElementById("divtag").appendChild(script);
+  //   // document.iframe.appendChild(script);
+  //   // return () => {
+  //   //   document.getElementById("divtag").removeChild(script);
+  //   // };
+  // }, []);
+  // <iframe
+  //   id="clickmeetingFlashroomIframe"
+  //   src="https://dennisrivera654.clickmeeting.com/164629284?popup=off&amp;lang=en&amp;xlang=en"
+  //   frameborder="0"
+  //   allow="microphone; camera; fullscreen; autoplay"
+  //   width="1024"
+  //   height="768"
+  //   style="border: none; display: block;"
+  // ></iframe>
 
   return (
     <div id="divtag">
+      {/* <iframe></iframe> */}
       {/* <Iframe /> */}
-      {/* <iframe
+      <iframe
         title="Click Meeting"
-        width="300"
+        width="500"
         height="500"
         allow="microphone"
-        srcDoc="https://embed.clickmeeting.com/embed_conference.html?r=1716023574842252"
-      ></iframe> */}
+        src="https://dennisrivera654.clickmeeting.com/model_reduction_by_moment_matching__beyond_linearity_-_a_review_of_the_last_10_years?popup=off&amp;lang=en&amp;xlang=en"
+        frameborder="0"
+        allowFullScreen="true"
+        webkitallowfullscreen="true"
+        mozallowfullscreen="true"
+      ></iframe>
     </div>
   );
 };
