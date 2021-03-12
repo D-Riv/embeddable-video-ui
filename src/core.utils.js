@@ -21,7 +21,7 @@ export const httpRequest = (
 
     axios({
       method: apiConfig.method,
-      url: DEFAULT.BASE_URL + apiConfig.endpoint,
+      url: apiConfig.endpoint,
       headers,
       data: apiConfig.data,
       params: apiConfig.params,
